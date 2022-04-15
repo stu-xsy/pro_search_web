@@ -4,6 +4,7 @@ import Appindex from "../components/home/Appindex";
 import Login from '@/components/Login'
 Vue.use(Router)
 
+
 export default new Router({
   routes: [
     {

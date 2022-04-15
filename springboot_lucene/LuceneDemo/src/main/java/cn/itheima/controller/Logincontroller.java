@@ -25,20 +25,21 @@ public class Logincontroller {
     @ResponseBody
     public ResultModel login(@RequestBody User requestUser) throws  Exception{
         // 对 html 标签进行转义，防止 XSS 攻击
-        String username = requestUser.getUsername();
-        username = HtmlUtils.htmlEscape(username);
-
+        String keyword= requestUser.getKeyword();
+        keyword = HtmlUtils.htmlEscape(keyword);
+        String page= requestUser.getPage();
         if (!Objects.equals("123456", requestUser.getPassword())) {
             String message = "账号密码错误";
             System.out.println("test");
+
             ResultModel resultModel = new ResultModel();
 
-            resultModel =searchservice.query("计算机",2);
+            resultModel =searchservice.query("计算机",Integer.valueOf(page));
             resultModel.setCode(400);
             return resultModel;
         } else {
             ResultModel resultModel = new ResultModel();
-            resultModel =searchservice.query(username,1);
+            resultModel =searchservice.query(keyword,Integer.valueOf(page));
             resultModel.setCode(200);
             return resultModel;
         }

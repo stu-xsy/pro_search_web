@@ -1,52 +1,94 @@
 <template>
   <div>
-    用户名:<input type="text" v-model="loginForm.username" placeholder="请输入用户名"/>
-    <br><br>
-    密码： <input type="password" v-model="loginForm.password" placeholder="请输入密码"/>
-    <br><br>
-    <button v-on:click="Login">登录</button>
-    <div>
-
-        <p style="text-align: left" v-for="a in skulist" v-bind:key="a">
-          <span v-text="a.answer"></span>
-        </p>
-
+    <div class="box">
+      <div class="searchBox">
+        <input type="text" v-model="keyword" placeholder="请输入关键词" class="searchInput" style="padding-left: 14px">
+        <input type="button"  @click="_search" value="搜索" class="searchButton">
+      </div>
     </div>
   </div>
 
 </template>
 <style>
-
+.box{
+  margin: 0 auto;
+  padding-top: 20px;
+  height: 50px;
+  width: 100%;
+}
+.searchBox{
+  margin: 0 auto;
+  width: 60%;
+  position: relative;
+}
+.searchInput{
+  display: inline-block;
+  width: 85%;
+  height: 38px;
+  border: 1px solid #cccccc;
+  float: left;
+  box-sizing: border-box;
+  -moz-box-sizing:border-box; /* Firefox */
+  -webkit-box-sizing:border-box; /* Safari */
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.searchButton{
+  display: inline-block;
+  width: 15%;
+  height: 38px;
+  line-height: 40px;
+  float: left;
+  background-color: #00a0e9;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border: none;
+  color: #fff;
+}
 </style>
+
 <script>
 
 export default {
   name: 'Login',
   data () {
     return {
-      loginForm:{
-        username:'',
-        password:''
-      },
+      keyword:'',
       skulist: {
         id:'',
         answer:2
       },
-      recordCount: 1
+      recordcount: 1,
+      pageCount:1
     }
   },
   methods: {
-    Login () {
+    _search () {
       this.$axios
         .post('http://localhost:8080/api/login', {
-          username: this.loginForm.username,
-          password: this.loginForm.password
+          keyword: this.keyword,
+          page:1,
+          password:123456
         })
         .then(successResponse => {
           if (successResponse.data.code === 200) {
             console.log(successResponse.data)
-            this.recordCount =successResponse.data.recordCount
+            this.pageCount =successResponse.data.pageCount
             this.skulist =successResponse.data.skulist
+            this.recordcount =successResponse.data.recordcount
+            console.log(this.recordcount)
+            this.$router.push({
+              path:'/index',
+              name:'Appindex',
+              query:{
+                skulist :this.skulist,
+                keyword:this.keyword,
+                pageCount:this.pageCount,
+                recordCount:this.recordcount
+              }
+            })
 
           }
         })

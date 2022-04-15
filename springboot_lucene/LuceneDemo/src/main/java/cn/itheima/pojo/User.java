@@ -2,8 +2,18 @@ package cn.itheima.pojo;
 
 public class User {
     int id;
-    String username;
+    String keyword;
     String password;
+    String page;
+
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
+    }
+
     public int getId() {
         return id;
     }
@@ -12,12 +22,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getKeyword() {
+        return keyword;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 
     public String getPassword() {
