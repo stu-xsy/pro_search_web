@@ -6,7 +6,12 @@ Vue.use(Router)
 
 
 export default new Router({
+  mode: 'hash',
+  // mode: 'hash',
+  base: process.env.BASE_URL,
+  scrollBehavior: () => ({ y: 0 }),
   routes: [
+
     {
       path: '/index',
       name: 'Appindex',
