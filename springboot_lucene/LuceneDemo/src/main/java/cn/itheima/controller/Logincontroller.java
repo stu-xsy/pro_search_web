@@ -19,7 +19,6 @@ import java.util.Objects;
 public class Logincontroller {
     @Autowired
     private searchservice searchservice;
-
     @CrossOrigin
     @PostMapping(value = "api/login")
     @ResponseBody

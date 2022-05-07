@@ -1,8 +1,13 @@
 package cn.itheima.service;
 
+import cn.itheima.dao.userreDao;
+import cn.itheima.dao.userreDaoimpl;
 import cn.itheima.jieba.JiebaAnalyzer;
+import cn.itheima.jieba.keyword.Keyword;
+import cn.itheima.jieba.keyword.TFIDFAnalyzer;
 import cn.itheima.pojo.ResultModel;
 import cn.itheima.pojo.sku;
+import cn.itheima.pojo.uset;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -24,6 +29,8 @@ import java.util.List;
 public class searchserviceimpl implements searchservice {
 
     public final static Integer PAGE_SIZE=10;
+    TFIDFAnalyzer tfidfAnalyzer = new TFIDFAnalyzer();
+    userreDao userredao = new userreDaoimpl();
     @Override
     public ResultModel query(String queryString, Integer page) throws  Exception {
         ResultModel resultModel =new ResultModel();
@@ -89,6 +96,19 @@ public class searchserviceimpl implements searchservice {
         resultModel.setCurPage(page);
         Long pagecount = topdocs.totalHits%PAGE_SIZE>0?(topdocs.totalHits/PAGE_SIZE)+1 : topdocs.totalHits/PAGE_SIZE;
         resultModel.setPageCount(pagecount);
+
+
+        //进行关键字提取
+        int topN=1;
+        List<Keyword> list=tfidfAnalyzer.analyze(queryString,topN);
+        uset User =new uset();
+        for(Keyword word:list)
+            User.setKeyword(word.getName());
+        for(Keyword word:list)
+            User.setTFIDF(word.getTfidfvalue());
+        userredao.turntouser(User);
+
+
         return resultModel;
 
     }

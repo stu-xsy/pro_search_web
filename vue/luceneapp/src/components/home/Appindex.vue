@@ -7,6 +7,7 @@
         <div class="searchBox">
           <input type="text" v-model="keyword" placeholder="请输入关键词" class="searchInput" style="padding-left: 14px">
           <input type="button"  @click="_search" value="搜索" class="searchButton">
+          <input type="button"  @click="_refer" value="推荐" class="referButton">
         </div>
       </div>
     </el-header>
@@ -132,6 +133,7 @@
   -webkit-box-sizing:border-box; /* Safari */
   border-bottom-left-radius: 5px;
   border-top-left-radius: 5px;
+  margin-top: 15px;
 }
 .searchButton {
   display: inline-block;
@@ -146,6 +148,22 @@
   border-top-right-radius: 5px;
   border: none;
   color: #fff;
+  margin-top: 15px;
+}
+.referButton {
+  display: inline-block;
+  width: 7%;
+  height: 38px;
+  line-height: 40px;
+  float: left;
+  background-color: #00a0e9;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border: none;
+  color: #fff;
+  margin-top: 15px;
 }
 /* 摘要背景板 */
 .hideBg {
@@ -301,6 +319,35 @@ export default {
     this.getParameter();
   },
   methods:{
+    _refer () {
+      this.$axios
+        .post('http://localhost:8080/api/search',{
+          keyword:'search',
+          page:1,
+          password:123456
+        })
+        .then(successResponse => {
+          if(successResponse.data.code === 200){
+            this.skulist=successResponse.data.skulist
+            this.pageCount =1
+            this.recordcount =1
+            for(let item of this.isHide)
+            {
+              item.issHide=true
+            }
+            this.$router.push({
+              path:'/index',
+              name:'Appindex',
+              query:{
+                skulist :this.skulist,
+                keyword:this.keyword,
+                pageCount: this.pageCount,
+                recordCount: this.recordCount
+              }
+            })
+          }
+        })
+    },
     _search () {
       this.$axios
         .post('http://localhost:8080/api/login', {
@@ -313,8 +360,10 @@ export default {
             this.flag=false
             this.recordCount =successResponse.data.recordcount
             this.skulist =successResponse.data.skulist
-
-            this.i=0
+            for(let item of this.isHide)
+            {
+              item.issHide=true
+            }
             for(let item of this.skulist)
             {
               this.isHide[this.i].id= item.id
@@ -322,6 +371,7 @@ export default {
             }
             this.i=0
             console.log(this.isHide)
+
             this.pageCount =successResponse.data.pageCount
             this.total =this.recordCount
             this.currentPage=1
@@ -351,7 +401,10 @@ export default {
           if (successResponse.data.code === 200) {
             this.pageCount =successResponse.data.pageCount
             this.skulist =successResponse.data.skulist
-
+            for(let item of this.isHide)
+            {
+              item.issHide=true
+            }
           }
         })
         .catch(failResponse => {
@@ -359,7 +412,6 @@ export default {
     },
     getParameter(){
       this.flag=true
-
       const routerParams =this.$route.query.skulist
       const routerParamskey = this.$route.query.keyword
       const routerpagecount =this.$route.query.pageCount
@@ -376,6 +428,7 @@ export default {
         this.isHide[this.i].id= item.id
         this.i=this.i+1
       }
+
       this.i=0
 
 

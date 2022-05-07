@@ -34,7 +34,7 @@ public class TestSearch {
 
 
         //3.设置搜索关键词
-         Query query=queryParser.parse("计算机");
+         Query query=queryParser.parse("如何学习C++");
 
         //4.创建Directory目录对象，指定索引库位置
         Directory dir= FSDirectory.open(Paths.get("D:\\dir"));
